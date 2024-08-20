@@ -1,0 +1,1 @@
+dotnet ef migrations add InitialData --context EntityDbContext --project C:\Users\achak\Documents\projects\test-dotnet-app\test-dotnet-app.csproj --verbose

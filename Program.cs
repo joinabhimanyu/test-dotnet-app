@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using test_dotnet_app.DbStore;
 using test_dotnet_app.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +13,21 @@ builder.Services.ConfigureMockDbStore();
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 
+
 var app = builder.Build();
+var logger=app.Services.GetService<ILogger>();
+app.ConfigureGlobalExceptionHandler(logger!);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+if (app.Environment.IsProduction())
+{
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();

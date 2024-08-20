@@ -10,14 +10,21 @@ namespace test_dotnet_app.Repositories.DepartmentFeature;
 public class DepartmentRepository : IDepartmentRepository
 {
     private IMockDbStore _dbStore;
+    private EntityDbContext _dbContext;
 
-    public DepartmentRepository(IMockDbStore dbStore)
+    public DepartmentRepository(IMockDbStore dbStore, EntityDbContext dbContext)
     {
         _dbStore = dbStore;
+        _dbContext = dbContext;
     }
 
     public Task<List<Department>> GetAllAsync(bool include)
     {
+        var products = _dbContext.Departments.ToList();
+        foreach (var product in products)
+        {
+            Console.WriteLine($"Product: {product.Name}");
+        }
         var departments = _dbStore.Departments ?? new();
         if (include)
         {
@@ -26,6 +33,7 @@ public class DepartmentRepository : IDepartmentRepository
                 _dbStore.LoadEmployeesForDepartment(ref department!);
             });
         }
+
         return Task.FromResult(departments);
     }
 
