@@ -6,14 +6,15 @@ namespace test_dotnet_app.Extensions;
 
 public static class ConfigureMockDbStoreWrapper
 {
-    public static void ConfigureMockDbStore(this IServiceCollection services)
+    public static void ConfigureMockDbStore(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IMockDbStore>(new MockDbStore());
-        services.AddDbContext<EntityDbContext>((options) =>
-       {
-           options.UseInMemoryDatabase("EmployeeDB");
-           // UseSqlServer(configuration.GetConnectionString("sqlConnection"))
-           // UseSqlServer("Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestDb;Integrated Security=True")
-       });
+        // services.AddDbContext<EntityDbContext>((options) =>
+        //{
+        //    options.UseInMemoryDatabase("EmployeeDB");
+        //    // UseSqlServer(configuration.GetConnectionString("sqlConnection"))
+        //    // UseSqlServer("Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestDb;Integrated Security=True")
+        //});
+
     }
 }

@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.ConfigureMockDbStore();
+builder.Services.ConfigureMockDbStore(builder.Configuration);
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 
@@ -17,6 +17,7 @@ builder.Services.ConfigureService();
 var app = builder.Build();
 var logger=app.Services.GetService<ILogger>();
 app.ConfigureGlobalExceptionHandler(logger!);
+// app.ConfigureMiddleware(logger!);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -35,6 +36,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 app.Run();

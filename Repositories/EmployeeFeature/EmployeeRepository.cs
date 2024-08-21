@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using test_dotnet_app.DbStore;
 using test_dotnet_app.DTO;
 using test_dotnet_app.Entities;
@@ -10,21 +11,38 @@ namespace test_dotnet_app.Repositories.EmployeeFeature;
 public class EmployeeRepository : IEmployeeRepository
 {
     private IMockDbStore _dbStore;
+    private EntityDbContext _dbContext;
 
     public EmployeeRepository(IMockDbStore dbStore)
     {
         _dbStore = dbStore;
+
+        _dbContext = new EntityDbContext();
     }
 
-    public Task<List<Employee>> GetAllAsync(bool include)
+    public Task<IEnumerable<Employee>> GetAllAsync(bool include)
     {
-        var employees = _dbStore.Employees ?? new();
+        // var employees = _dbStore.Employees ?? new();
+        // if (include)
+        // {
+        //     employees.ForEach((employee) =>
+        //     {
+        //         _dbStore.LoadDepartmentForEmployee(ref employee!);
+        //     });
+        // }
+        IEnumerable<Employee> employees;
         if (include)
         {
-            employees.ForEach((employee) =>
-            {
-                _dbStore.LoadDepartmentForEmployee(ref employee!);
-            });
+            employees = _dbContext.Employees
+                // tell child entities to ignore its children
+                .IgnoreAutoIncludes()
+                .Include(a => a.Department)
+                .OrderByDescending(b => b.Id)
+                .ToList();
+        }
+        else
+        {
+            employees = _dbContext.Employees.IgnoreAutoIncludes().OrderByDescending(b => b.Id).ToList();
         }
         return Task.FromResult(employees);
     }
@@ -42,7 +60,7 @@ public class EmployeeRepository : IEmployeeRepository
 
     public Task<List<Employee>?> SearchAsync(List<SearchParam>? searchParams, bool include)
     {
-        var search=searchParams.buildExpression<Employee>();
+        var search = searchParams.buildExpression<Employee>();
         var employees = _dbStore.Employees?.Where(search!.Compile()).ToList();
         if (include)
         {
@@ -56,11 +74,23 @@ public class EmployeeRepository : IEmployeeRepository
 
     public Task AddAsync(Employee employee)
     {
-        employee.Id = _dbStore.Departments?.Max(d => d.Id) ?? 0 + 1;
+        // employee.Id = _dbStore.Departments?.Max(d => d.Id) ?? 0 + 1;
+        var maxid = _dbContext.Employees.OrderByDescending(item => item.Id).Select(a => a.Id).FirstOrDefault();
+        if (maxid > 0)
+        {
+            employee.Id = Convert.ToInt32(maxid) + 1;
+        }
+        else
+        {
+            employee.Id = 1;
+        }
         employee.CreatedAt = DateTime.Now;
         employee.UpdatedAt = DateTime.Now;
-        _dbStore.Employees ??= new();
-        _dbStore.Employees.Add(employee);
+        // _dbStore.Employees ??= new();
+        // _dbStore.Employees.Add(employee);
+        _dbContext.Employees.Add(employee);
+        _dbContext.SaveChanges();
+
         return Task.CompletedTask;
     }
 

@@ -15,7 +15,7 @@ public class DepartmentService: IDepartmentService
         _repository = repository;
     }
 
-    public async Task<List<Department>> GetAllAsync(bool include)
+    public async Task<IEnumerable<Department>> GetAllAsync(bool include)
     {
         return await _repository.GetAllAsync(include);
     }

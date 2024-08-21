@@ -42,7 +42,7 @@ public class MockDbStore : IMockDbStore
         if (department != null)
         {
             var id = department?.Id;
-            department!.Employees = Employees?.Where(e => e.DepartmentId == id).ToList() ?? new();
+            // department!.Employees = Employees?.Where(e => e.DepartmentId == id).ToList() ?? new();
         }
     }
     public void LoadDepartmentForEmployee(ref Employee? employee)

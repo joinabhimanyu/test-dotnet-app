@@ -23,7 +23,7 @@ namespace test_dotnet_app.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            return await _service.GetAllAsync(true);
+            return Ok(await _service.GetAllAsync(true));
         }
 
         // GET: api/Employee/5

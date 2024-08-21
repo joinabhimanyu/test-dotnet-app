@@ -17,7 +17,11 @@ public class EmployeeEntityConfiguration : IEntityTypeConfiguration<Employee>
             new Employee { Id = 5, FirstName = "Michael", LastName = "Davis", DepartmentId = 5 },
             new Employee { Id = 6, FirstName = "Emily", LastName = "Thompson", DepartmentId = 6 },
             new Employee { Id = 7, FirstName = "Daniel", LastName = "Brown", DepartmentId = 7 },
-            new Employee { Id = 8, FirstName = "Sarah", LastName = "Evans", DepartmentId = 8 }
+            new Employee { Id = 8, FirstName = "Sarah", LastName = "Evans", DepartmentId = 8 },
+            new Employee { Id = 9, FirstName = "Max", LastName = "Evans", DepartmentId = 9 },
+            new Employee { Id = 10, FirstName = "Emily", LastName = "Evans", DepartmentId = 10 },
+            new Employee { Id = 11, FirstName = "Micky", LastName = "Evans", DepartmentId = 11 },
+            new Employee { Id = 12, FirstName = "Kyle", LastName = "Evans", DepartmentId = 12 }
         );
     }
 }

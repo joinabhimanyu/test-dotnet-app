@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
 using test_dotnet_app.DbStore;
@@ -12,29 +13,39 @@ public class DepartmentRepository : IDepartmentRepository
     private IMockDbStore _dbStore;
     private EntityDbContext _dbContext;
 
-    public DepartmentRepository(IMockDbStore dbStore, EntityDbContext dbContext)
+    public DepartmentRepository(IMockDbStore dbStore)
     {
         _dbStore = dbStore;
-        _dbContext = dbContext;
+
+        _dbContext = new EntityDbContext();
     }
 
-    public Task<List<Department>> GetAllAsync(bool include)
+    public Task<IEnumerable<Department>> GetAllAsync(bool include)
     {
-        var products = _dbContext.Departments.ToList();
-        foreach (var product in products)
-        {
-            Console.WriteLine($"Product: {product.Name}");
-        }
-        var departments = _dbStore.Departments ?? new();
+        // var departments = _dbStore.Departments ?? new();
+        // if (include)
+        // {
+        //     departments.ForEach((department) =>
+        //     {
+        //         _dbStore.LoadEmployeesForDepartment(ref department!);
+        //     });
+        // }
+        IEnumerable<Department> departments;
+        IEnumerable<Department> results=new List<Department>();
         if (include)
         {
-            departments.ForEach((department) =>
-            {
-                _dbStore.LoadEmployeesForDepartment(ref department!);
-            });
+            departments = _dbContext.Departments
+                // tell child entities to ignore its children
+                .IgnoreAutoIncludes()
+                .Include(a => a.Employees)
+                .OrderByDescending(b => b.Id)
+                .ToList();
         }
-
-        return Task.FromResult(departments);
+        else
+        {
+            departments = _dbContext.Departments.IgnoreAutoIncludes().OrderByDescending(b => b.Id).ToList();
+        }
+        return Task.FromResult(results);
     }
 
     public Task<Department?> GetByIdAsync(int id, bool include)
@@ -64,11 +75,23 @@ public class DepartmentRepository : IDepartmentRepository
 
     public Task AddAsync(Department department)
     {
-        department.Id = _dbStore.Departments?.Max(d => d.Id) ?? 0 + 1;
+        // department.Id = _dbStore.Departments?.Max(d => d.Id) ?? 0 + 1;
+        var maxid = _dbContext.Departments.OrderByDescending(item => item.Id).Select(a => a.Id).FirstOrDefault();
+        if (maxid > 0)
+        {
+            department.Id = Convert.ToInt32(maxid) + 1;
+        }
+        else
+        {
+            department.Id = 1;
+        }
         department.CreatedAt = DateTime.Now;
         department.UpdatedAt = DateTime.Now;
-        _dbStore.Departments ??= new();
-        _dbStore.Departments.Add(department);
+        // _dbStore.Departments ??= new();
+        // _dbStore.Departments.Add(department);
+        _dbContext.Departments!.Add(department);
+        _dbContext.SaveChanges();
+
         return Task.CompletedTask;
     }
 
