@@ -21,14 +21,14 @@ namespace test_dotnet_app.Controllers
 
         // GET: api/Employee
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees()
         {
             return Ok(await _service.GetAllAsync(true));
         }
 
         // GET: api/Employee/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public async Task<ActionResult<EmployeeDto>> GetEmployee(int id)
         {
             var employee = await _service.GetByIdAsync(id, true);
             if (employee == null)
@@ -39,13 +39,14 @@ namespace test_dotnet_app.Controllers
         }
         // search employee
         [HttpPost("search")]
-        public async Task<ActionResult<IEnumerable<Employee>>> SearchEmployees([FromBody] List<SearchParam>? searchParams = null)
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> SearchEmployees([FromBody] List<SearchParam>? searchParams = null)
         {
-            return await _service.SearchAsync(searchParams, true);
+            var result=await _service.SearchAsync(searchParams, true);
+            return Ok(result);
         }
         // PUT: api/Employee/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
+        public async Task<IActionResult> PutEmployee(int id, EmployeeDto employee)
         {
             if (id!= employee.Id)
             {
@@ -56,14 +57,14 @@ namespace test_dotnet_app.Controllers
         }
         // POST: api/Employee
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<EmployeeDto>> PostEmployee(EmployeeDto employee)
         {
             await _service.AddAsync(employee);
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
         // DELETE: api/Employee/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Employee>> DeleteEmployee(int id)
+        public async Task<ActionResult<EmployeeDto>> DeleteEmployee(int id)
         {
             var employee = await _service.GetByIdAsync(id, false);
             if (employee == null)

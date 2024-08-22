@@ -13,16 +13,14 @@ public class EmployeeRepository : IEmployeeRepository
 {
     private IMockDbStore _dbStore;
     private EntityDbContext _dbContext;
-    private IMapper _mapper;
 
-    public EmployeeRepository(IMockDbStore dbStore, IMapper mapper)
+    public EmployeeRepository(IMockDbStore dbStore)
     {
         _dbStore = dbStore;
-        _mapper = mapper;
         _dbContext = new EntityDbContext();
     }
 
-    public Task<IEnumerable<EmployeeDto>> GetAllAsync(bool include)
+    public Task<IEnumerable<Employee>> GetAllAsync(bool include)
     {
         IEnumerable<Employee> employees;
         if (include)
@@ -38,32 +36,38 @@ public class EmployeeRepository : IEmployeeRepository
         {
             employees = _dbContext.Employees.IgnoreAutoIncludes().OrderByDescending(b => b.Id).ToList();
         }
-        var employeesDto=_mapper.Map<IEnumerable<EmployeeDto>>(employees);
-        return Task.FromResult(employeesDto);
+        return Task.FromResult(employees);
     }
 
     public Task<Employee?> GetByIdAsync(int id, bool include)
     {
-        var employee = _dbStore.Employees?.FirstOrDefault(e => e.Id == id);
-        if (employee is null) throw new CustomErrorException((int)CustomErroCodes.EntityNotFoundException, "Employee not found");
+        Employee? employee = null;
         if (include)
         {
-            _dbStore.LoadDepartmentForEmployee(ref employee);
+            employee = _dbContext.Employees?.IgnoreAutoIncludes().Include(a=>a.Department).FirstOrDefault(e => e.Id == id);
         }
+        else
+        {
+            employee = _dbContext.Employees?.IgnoreAutoIncludes().FirstOrDefault(e => e.Id == id);
+        }
+        if (employee is null) throw new CustomErrorException((int)CustomErroCodes.EntityNotFoundException, "Employee not found");
+        
         return Task.FromResult(employee);
     }
 
-    public Task<List<Employee>?> SearchAsync(List<SearchParam>? searchParams, bool include)
+    public Task<IEnumerable<Employee>?> SearchAsync(List<SearchParam>? searchParams, bool include)
     {
         var search = searchParams.buildExpression<Employee>();
-        var employees = _dbStore.Employees?.Where(search!.Compile()).ToList();
+        IEnumerable<Employee>? employees = null;
         if (include)
         {
-            employees?.ForEach((employee) =>
-            {
-                _dbStore.LoadDepartmentForEmployee(ref employee!);
-            });
+            employees = _dbContext.Employees?.IgnoreAutoIncludes().Include(a=>a.Department).Where(search!.Compile()).ToList();
         }
+        else
+        {
+            employees = _dbContext.Employees?.IgnoreAutoIncludes().Where(search!.Compile()).ToList();
+        }
+
         return Task.FromResult(employees);
     }
 
@@ -81,8 +85,6 @@ public class EmployeeRepository : IEmployeeRepository
         }
         employee.CreatedAt = DateTime.Now;
         employee.UpdatedAt = DateTime.Now;
-        // _dbStore.Employees ??= new();
-        // _dbStore.Employees.Add(employee);
         _dbContext.Employees.Add(employee);
         _dbContext.SaveChanges();
 
@@ -91,24 +93,26 @@ public class EmployeeRepository : IEmployeeRepository
 
     public Task DeleteAsync(int id)
     {
-        var employee = _dbStore.Employees?.FirstOrDefault(e => e.Id == id);
+        var employee = _dbContext.Employees?.FirstOrDefault(e => e.Id == id);
         if (employee is not null)
         {
-            _dbStore.Employees?.Remove(employee);
+            _dbContext.Employees?.Remove(employee);
+            _dbContext.SaveChanges();
         }
         return Task.CompletedTask;
     }
 
     public Task UpdateAsync(Employee employee)
     {
-        employee.UpdatedAt = DateTime.Now;
-        _dbStore.Employees ??= new();
-        var existingEmployee = _dbStore.Employees.FirstOrDefault(e => e.Id == employee.Id);
+        var existingEmployee = _dbContext.Employees.FirstOrDefault(e => e.Id == employee.Id);
         if (existingEmployee is not null)
         {
-            existingEmployee.FirstName = employee.FirstName;
+            existingEmployee.FirstName=employee.FirstName;
             existingEmployee.LastName = employee.LastName;
-            existingEmployee.DepartmentId = employee.DepartmentId;
+            
+            existingEmployee.UpdatedAt = DateTime.Now;
+            _dbContext.Employees.Update(existingEmployee);
+            _dbContext.SaveChanges();
         }
         return Task.CompletedTask;
     }

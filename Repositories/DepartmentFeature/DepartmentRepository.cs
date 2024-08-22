@@ -13,16 +13,14 @@ public class DepartmentRepository : IDepartmentRepository
 {
     private IMockDbStore _dbStore;
     private EntityDbContext _dbContext;
-    private IMapper _mapper;
 
-    public DepartmentRepository(IMockDbStore dbStore, IMapper mapper)
+    public DepartmentRepository(IMockDbStore dbStore)
     {
         _dbStore = dbStore;
-        _mapper = mapper;
         _dbContext = new EntityDbContext();
     }
 
-    public Task<IEnumerable<DepartmentDto>> GetAllAsync(bool include)
+    public Task<IEnumerable<Department>> GetAllAsync(bool include)
     {
         IEnumerable<Department> departments;
         if (include)
@@ -38,32 +36,38 @@ public class DepartmentRepository : IDepartmentRepository
         {
             departments = _dbContext.Departments.IgnoreAutoIncludes().OrderByDescending(b => b.Id).ToList();
         }
-        var departmentsDto=_mapper.Map<IEnumerable<DepartmentDto>>(departments);
-        return Task.FromResult(departmentsDto);
+        return Task.FromResult(departments);
     }
 
     public Task<Department?> GetByIdAsync(int id, bool include)
     {
-        var department = _dbStore.Departments?.FirstOrDefault(d => d.Id == id);
-        if (department is null) throw new CustomErrorException((int)CustomErroCodes.EntityNotFoundException, "Department not found");
+        Department? department=null;
         if (include)
         {
-            _dbStore.LoadEmployeesForDepartment(ref department);
+            department = _dbContext.Departments.IgnoreAutoIncludes().Include(a=>a.Employees)?.FirstOrDefault(d => d.Id == id);
         }
+        else
+        {
+            department = _dbContext.Departments.IgnoreAutoIncludes().FirstOrDefault(d => d.Id == id);
+        }
+        
+        if (department is null) throw new CustomErrorException((int)CustomErroCodes.EntityNotFoundException, "Department not found");
         return Task.FromResult(department);
     }
 
-    public Task<List<Department>?> SearchAsync(List<SearchParam>? searchParams, bool include)
+    public Task<IEnumerable<Department>?> SearchAsync(List<SearchParam>? searchParams, bool include)
     {
         var search = searchParams.buildExpression<Department>();
-        var departments = _dbStore.Departments?.Where(search!.Compile()).ToList();
+        IEnumerable<Department>? departments = null;
         if (include)
         {
-            departments?.ForEach((department) =>
-            {
-                _dbStore.LoadEmployeesForDepartment(ref department!);
-            });
+            departments = _dbContext.Departments?.IgnoreAutoIncludes().Include(a=>a.Employees).Where(search!.Compile()).ToList();
         }
+        else
+        {
+            departments = _dbContext.Departments?.IgnoreAutoIncludes().Where(search!.Compile()).ToList();
+        }
+        
         return Task.FromResult(departments);
     }
 
@@ -92,20 +96,25 @@ public class DepartmentRepository : IDepartmentRepository
     public Task UpdateAsync(Department department)
     {
         department.UpdatedAt = DateTime.Now;
-        var existingDepartment = _dbStore.Departments?.FirstOrDefault(d => d.Id == department.Id);
+        var existingDepartment = _dbContext.Departments?.FirstOrDefault(d => d.Id == department.Id);
         if (existingDepartment != null)
         {
             existingDepartment.Name = department.Name;
+            existingDepartment.UpdatedAt = DateTime.Now;
+            
+            _dbContext.Update(existingDepartment);
+            _dbContext.SaveChanges();
         }
         return Task.CompletedTask;
     }
 
     public Task DeleteAsync(int id)
     {
-        var departmentToRemove = _dbStore.Departments?.FirstOrDefault(d => d.Id == id);
+        var departmentToRemove = _dbContext.Departments?.FirstOrDefault(d => d.Id == id);
         if (departmentToRemove != null)
         {
-            _dbStore.Departments?.Remove(departmentToRemove);
+            _dbContext.Departments?.Remove(departmentToRemove);
+            _dbContext.SaveChanges();
         }
         return Task.CompletedTask;
     }

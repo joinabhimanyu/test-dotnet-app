@@ -5,7 +5,7 @@ namespace test_dotnet_app.DTO;
 
 public class DepartmentDto : BaseDto
 {
-    public int DepartmentId { get; set; }
+    public int Id { get; set; }
 
     [Required(ErrorMessage = "Department Name is required")]
     public string? Name { get; set; }

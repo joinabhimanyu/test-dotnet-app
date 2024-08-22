@@ -5,7 +5,7 @@ namespace test_dotnet_app.DTO;
 
 public class EmployeeDto: BaseDto
 {
-    public int EmployeeId { get; set; }
+    public int Id { get; set; }
 
     [Required(ErrorMessage ="Employeed First Name is required")]
     public string? FirstName { get; set; }

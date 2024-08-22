@@ -28,7 +28,7 @@ namespace test_dotnet_app.Controllers
 
         // GET: api/Department/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>> GetDepartment(int id)
+        public async Task<ActionResult<DepartmentDto>> GetDepartment(int id)
         {
             var department = await _service.GetByIdAsync(id, true);
             if (department == null)
@@ -39,13 +39,14 @@ namespace test_dotnet_app.Controllers
         }
         // search department
         [HttpPost("search")]
-        public async Task<ActionResult<IEnumerable<Department>>> SearchDepartments([FromBody] List<SearchParam>? searchParams = null)
+        public async Task<ActionResult<IEnumerable<DepartmentDto>>> SearchDepartments([FromBody] List<SearchParam>? searchParams = null)
         {
-            return await _service.SearchAsync(searchParams, true);
+            var result=await _service.SearchAsync(searchParams, true);
+            return Ok(result);
         }
         // PUT: api/Department/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, Department department)
+        public async Task<IActionResult> PutDepartment(int id, DepartmentDto department)
         {
             if (id!= department.Id)
             {
@@ -56,14 +57,14 @@ namespace test_dotnet_app.Controllers
         }
         // POST: api/Department
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        public async Task<ActionResult<DepartmentDto>> PostDepartment(DepartmentDto department)
         {
             await _service.AddAsync(department);
             return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
         }
         // DELETE: api/Department/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Department>> DeleteDepartment(int id)
+        public async Task<ActionResult<DepartmentDto>> DeleteDepartment(int id)
         {
             var department = await _service.GetByIdAsync(id, false);
             if (department == null)

@@ -7,9 +7,9 @@ namespace test_dotnet_app.Services.DepartmentFeature;
 public interface IDepartmentService
 {
     Task<IEnumerable<DepartmentDto>> GetAllAsync(bool include);
-    Task<Department?> GetByIdAsync(int id, bool include);
-    Task<List<Department>?> SearchAsync(List<SearchParam>? searchParams, bool include);
-    Task AddAsync(Department department);
+    Task<DepartmentDto?> GetByIdAsync(int id, bool include);
+    Task<IEnumerable<DepartmentDto>?> SearchAsync(List<SearchParam>? searchParams, bool include);
+    Task AddAsync(DepartmentDto department);
     Task DeleteAsync(int id);
-    Task UpdateAsync(Department department);
+    Task UpdateAsync(DepartmentDto department);
 }
