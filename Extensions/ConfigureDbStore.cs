@@ -4,9 +4,9 @@ using test_dotnet_app.DbStore;
 
 namespace test_dotnet_app.Extensions;
 
-public static class ConfigureMockDbStoreWrapper
+public static class ConfigureDbStoreWrapper
 {
-    public static void ConfigureMockDbStore(this IServiceCollection services, IConfiguration configuration)
+    public static void ConfigureDbStore(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IMockDbStore>(new MockDbStore());
         // services.AddDbContext<EntityDbContext>((options) =>

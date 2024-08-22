@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using test_dotnet_app.DbStore;
 using test_dotnet_app.Extensions;
+using test_dotnet_app.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,7 +10,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.ConfigureMockDbStore(builder.Configuration);
+builder.Services.ConfigureDbStore(builder.Configuration);
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 

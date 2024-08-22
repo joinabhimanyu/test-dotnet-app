@@ -1,6 +1,6 @@
 using System;
 
-namespace test_dotnet_app.Extensions;
+namespace test_dotnet_app.Middlewares;
 
 public static class ConfigureMiddlewareWrapper
 {

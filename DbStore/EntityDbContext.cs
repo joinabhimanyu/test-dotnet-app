@@ -36,29 +36,8 @@ public class EntityDbContext: DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // ignore auto includes in entity
-        // modelBuilder.Entity<Department>().Ignore("Employees");
-        // modelBuilder.Entity<Employee>().Ignore("Department");
-        modelBuilder.Entity<Department>()
-            .HasMany(dep=>dep.Employees)
-            .WithOne(emp=>emp.Department)
-            .HasForeignKey(emp=>emp.DepartmentId)
-            .IsRequired();
-
-        modelBuilder.Entity<Employee>()
-            .HasOne(emp=>emp.Department)
-            .WithMany(dept=>dept.Employees)
-            .HasForeignKey(emp=>emp.DepartmentId)
-            .IsRequired();
-
-        modelBuilder.Entity<Employee>()
-        .Navigation(a=>a.Department)
-        .AutoInclude(false);
-
-        modelBuilder.Entity<Department>()
-        .Navigation(a=>a.Employees)
-        .AutoInclude(false);
-
+        modelBuilder.ConfigureDocumentEntityRelations();
+        modelBuilder.ConfigureEmployeeEntityRelations();
         modelBuilder.ApplyConfiguration(new DepartmentEntityConfiguration());
         modelBuilder.ApplyConfiguration(new EmployeeEntityConfiguration());
     }
