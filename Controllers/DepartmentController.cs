@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Extensions;
 using test_dotnet_app.DTO;
 using test_dotnet_app.Entities;
 using test_dotnet_app.Services.DepartmentFeature;
+using test_dotnet_app.Utils;
 
 namespace test_dotnet_app.Controllers
 {
@@ -50,7 +52,14 @@ namespace test_dotnet_app.Controllers
         {
             if (id!= department.Id)
             {
-                return BadRequest();
+                _logger.LogError($"Department {id} does not exist in department");
+                ModelState.TryAddModelError(CustomErroCodes.EntityNotFoundException.GetDisplayName(), $"Department {id} does not exist in department");
+                return BadRequest(ModelState);
+            }
+            else if(!ModelState.IsValid)
+            {
+                _logger.LogError($"Department payload is invalid. Validation failed with errors: {ModelState.Select(x=>new {x.Key, x.Value}).ToList().ToString()}");
+                return BadRequest(ModelState);
             }
             await _service.UpdateAsync(department);
             return NoContent();
@@ -59,6 +68,11 @@ namespace test_dotnet_app.Controllers
         [HttpPost]
         public async Task<ActionResult<DepartmentDto>> PostDepartment(DepartmentDto department)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError($"Department payload is invalid. Validation failed with errors: {ModelState.Select(x=>new {x.Key, x.Value}).ToList().ToString()}");
+                return BadRequest(ModelState);
+            }
             await _service.AddAsync(department);
             return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
         }

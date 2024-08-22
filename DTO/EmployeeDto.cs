@@ -14,6 +14,9 @@ public class EmployeeDto: BaseDto
     public string? LastName { get; set; }
 
     public string? FullName { get; set; }
+    
+    [Required(ErrorMessage ="Department is required")]
+    public int DepartmentId { get; set; }
 
     public string? DepartmentName { get; set; }
 }

@@ -109,6 +109,7 @@ public class EmployeeRepository : IEmployeeRepository
         {
             existingEmployee.FirstName=employee.FirstName;
             existingEmployee.LastName = employee.LastName;
+            existingEmployee.DepartmentId=employee.DepartmentId;
             
             existingEmployee.UpdatedAt = DateTime.Now;
             _dbContext.Employees.Update(existingEmployee);

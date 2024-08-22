@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Extensions;
 using test_dotnet_app.DTO;
 using test_dotnet_app.Entities;
 using test_dotnet_app.Services.EmployeeFeature;
+using test_dotnet_app.Utils;
 
 namespace test_dotnet_app.Controllers
 {
@@ -50,7 +52,14 @@ namespace test_dotnet_app.Controllers
         {
             if (id!= employee.Id)
             {
-                return BadRequest();
+                _logger.LogError($"Employee {id} does not exist in employee");
+                ModelState.TryAddModelError(CustomErroCodes.EntityNotFoundException.GetDisplayName(), $"Employee {id} does not exist in employee");
+                return BadRequest(ModelState);
+            }
+            else if(!ModelState.IsValid)
+            {
+                _logger.LogError($"Employee payload is invalid. Validation failed with errors: {ModelState.Select(x=>new {x.Key, x.Value}).ToList().ToString()}");
+                return BadRequest(ModelState);
             }
             await _service.UpdateAsync(employee);
             return NoContent();
@@ -59,6 +68,11 @@ namespace test_dotnet_app.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeDto>> PostEmployee(EmployeeDto employee)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError($"Employee payload is invalid. Validation failed with errors: {ModelState.Select(x=>new {x.Key, x.Value}).ToList().ToString()}");
+                return BadRequest(ModelState);
+            }
             await _service.AddAsync(employee);
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
