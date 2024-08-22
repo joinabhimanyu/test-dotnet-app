@@ -16,7 +16,7 @@ public class EmployeeService : IEmployeeService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<Employee>> GetAllAsync(bool include)
+    public async Task<IEnumerable<EmployeeDto>> GetAllAsync(bool include)
     {
         return await _repository.GetAllAsync(include);
     }

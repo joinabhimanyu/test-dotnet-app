@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using test_dotnet_app.DbStore;
 using test_dotnet_app.Extensions;
@@ -13,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureDbStore(builder.Configuration);
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
-
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 var logger=app.Services.GetService<ILogger>();

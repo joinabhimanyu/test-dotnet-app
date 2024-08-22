@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq.Expressions;
@@ -12,26 +13,18 @@ public class DepartmentRepository : IDepartmentRepository
 {
     private IMockDbStore _dbStore;
     private EntityDbContext _dbContext;
+    private IMapper _mapper;
 
-    public DepartmentRepository(IMockDbStore dbStore)
+    public DepartmentRepository(IMockDbStore dbStore, IMapper mapper)
     {
         _dbStore = dbStore;
-
+        _mapper = mapper;
         _dbContext = new EntityDbContext();
     }
 
-    public Task<IEnumerable<Department>> GetAllAsync(bool include)
+    public Task<IEnumerable<DepartmentDto>> GetAllAsync(bool include)
     {
-        // var departments = _dbStore.Departments ?? new();
-        // if (include)
-        // {
-        //     departments.ForEach((department) =>
-        //     {
-        //         _dbStore.LoadEmployeesForDepartment(ref department!);
-        //     });
-        // }
         IEnumerable<Department> departments;
-        IEnumerable<Department> results=new List<Department>();
         if (include)
         {
             departments = _dbContext.Departments
@@ -45,7 +38,8 @@ public class DepartmentRepository : IDepartmentRepository
         {
             departments = _dbContext.Departments.IgnoreAutoIncludes().OrderByDescending(b => b.Id).ToList();
         }
-        return Task.FromResult(results);
+        var departmentsDto=_mapper.Map<IEnumerable<DepartmentDto>>(departments);
+        return Task.FromResult(departmentsDto);
     }
 
     public Task<Department?> GetByIdAsync(int id, bool include)

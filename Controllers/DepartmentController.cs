@@ -21,7 +21,7 @@ namespace test_dotnet_app.Controllers
 
         // GET: api/Department
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
+        public async Task<ActionResult<IEnumerable<DepartmentDto>>> GetDepartments()
         {
             return Ok(await _service.GetAllAsync(true));
         }

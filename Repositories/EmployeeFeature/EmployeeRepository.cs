@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using test_dotnet_app.DbStore;
 using test_dotnet_app.DTO;
@@ -12,24 +13,17 @@ public class EmployeeRepository : IEmployeeRepository
 {
     private IMockDbStore _dbStore;
     private EntityDbContext _dbContext;
+    private IMapper _mapper;
 
-    public EmployeeRepository(IMockDbStore dbStore)
+    public EmployeeRepository(IMockDbStore dbStore, IMapper mapper)
     {
         _dbStore = dbStore;
-
+        _mapper = mapper;
         _dbContext = new EntityDbContext();
     }
 
-    public Task<IEnumerable<Employee>> GetAllAsync(bool include)
+    public Task<IEnumerable<EmployeeDto>> GetAllAsync(bool include)
     {
-        // var employees = _dbStore.Employees ?? new();
-        // if (include)
-        // {
-        //     employees.ForEach((employee) =>
-        //     {
-        //         _dbStore.LoadDepartmentForEmployee(ref employee!);
-        //     });
-        // }
         IEnumerable<Employee> employees;
         if (include)
         {
@@ -44,7 +38,8 @@ public class EmployeeRepository : IEmployeeRepository
         {
             employees = _dbContext.Employees.IgnoreAutoIncludes().OrderByDescending(b => b.Id).ToList();
         }
-        return Task.FromResult(employees);
+        var employeesDto=_mapper.Map<IEnumerable<EmployeeDto>>(employees);
+        return Task.FromResult(employeesDto);
     }
 
     public Task<Employee?> GetByIdAsync(int id, bool include)
