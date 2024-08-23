@@ -14,10 +14,10 @@ public class EmployeeRepository : IEmployeeRepository
     private IMockDbStore _dbStore;
     private EntityDbContext _dbContext;
 
-    public EmployeeRepository(IMockDbStore dbStore)
+    public EmployeeRepository(IMockDbStore dbStore, EntityDbContext dbContext)
     {
         _dbStore = dbStore;
-        _dbContext = new EntityDbContext();
+        _dbContext = dbContext;
     }
 
     public Task<IEnumerable<Employee>> GetAllAsync(bool include)

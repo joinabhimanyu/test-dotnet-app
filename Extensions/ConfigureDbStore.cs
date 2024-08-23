@@ -9,12 +9,12 @@ public static class ConfigureDbStoreWrapper
     public static void ConfigureDbStore(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IMockDbStore>(new MockDbStore());
-        // services.AddDbContext<EntityDbContext>((options) =>
-        //{
-        //    options.UseInMemoryDatabase("EmployeeDB");
-        //    // UseSqlServer(configuration.GetConnectionString("sqlConnection"))
-        //    // UseSqlServer("Data Source=(localdb)\\mssqllocaldb;Initial Catalog=TestDb;Integrated Security=True")
-        //});
+        services.AddDbContext<EntityDbContext>((options) =>
+        {
+            options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=EmployeeDB;Trusted_Connection=True;TrustServerCertificate=True;Encrypt=False;");
+            // options.UseInMemoryDatabase("EmployeeDB");
+           // options.UseSqlServer(configuration.GetConnectionString("sqlConnection"))
+        });
 
     }
 }

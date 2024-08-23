@@ -14,10 +14,10 @@ public class DepartmentRepository : IDepartmentRepository
     private IMockDbStore _dbStore;
     private EntityDbContext _dbContext;
 
-    public DepartmentRepository(IMockDbStore dbStore)
+    public DepartmentRepository(IMockDbStore dbStore, EntityDbContext dbContext)
     {
         _dbStore = dbStore;
-        _dbContext = new EntityDbContext();
+        _dbContext = dbContext;
     }
 
     public Task<IEnumerable<Department>> GetAllAsync(bool include)
