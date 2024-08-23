@@ -48,7 +48,7 @@ namespace test_dotnet_app.Controllers
         }
         // PUT: api/Employee/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, EmployeeDto employee)
+        public async Task<IActionResult> PutEmployee(int id, [FromBody] EmployeeDto employee)
         {
             if (id!= employee.Id)
             {
@@ -66,7 +66,7 @@ namespace test_dotnet_app.Controllers
         }
         // POST: api/Employee
         [HttpPost]
-        public async Task<ActionResult<EmployeeDto>> PostEmployee(EmployeeDto employee)
+        public async Task<ActionResult<EmployeeDto>> PostEmployee([FromBody] EmployeeDto employee)
         {
             if (!ModelState.IsValid)
             {

@@ -89,6 +89,8 @@ public static class ExpressionBuilder
             //     ),
             //     parameter
             // );
+
+            // Employees.Where(x=>x.FirstName=="value" && x.LastName=="value")
         }
         return search;
     }

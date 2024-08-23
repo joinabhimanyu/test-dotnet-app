@@ -48,7 +48,7 @@ namespace test_dotnet_app.Controllers
         }
         // PUT: api/Department/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, DepartmentDto department)
+        public async Task<IActionResult> PutDepartment(int id, [FromBody] DepartmentDto department)
         {
             if (id!= department.Id)
             {
@@ -66,7 +66,7 @@ namespace test_dotnet_app.Controllers
         }
         // POST: api/Department
         [HttpPost]
-        public async Task<ActionResult<DepartmentDto>> PostDepartment(DepartmentDto department)
+        public async Task<ActionResult<DepartmentDto>> PostDepartment([FromBody] DepartmentDto department)
         {
             if (!ModelState.IsValid)
             {

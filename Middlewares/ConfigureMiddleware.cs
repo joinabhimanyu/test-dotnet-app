@@ -4,13 +4,13 @@ namespace test_dotnet_app.Middlewares;
 
 public static class ConfigureMiddlewareWrapper
 {
-    public static void ConfigureMiddleware(this WebApplication app, ILogger logger)
+    public static void ConfigureMiddleware(this WebApplication app)
     {
-        app.MapGet("/", (IApplicationBuilder _app)=>{
-            _app.Use(async (context, next)=>{
-                logger.LogInformation("Request received at: {time}", DateTime.Now);
-                await next();
-            });
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        app.Use(async (context, next) =>
+        {
+            logger.LogInformation("Request received at: {time}", DateTime.Now);
+            await next();
         });
     }
 }

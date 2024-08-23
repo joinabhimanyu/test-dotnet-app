@@ -8,8 +8,9 @@ namespace test_dotnet_app.Middlewares;
 
 public static class ConfigureGlobalExceptionHandlerWrapper
 {
-    public static void ConfigureGlobalExceptionHandler(this WebApplication app, ILogger logger)
+    public static void ConfigureGlobalExceptionHandler(this WebApplication app)
     {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
         app.UseExceptionHandler(appError =>
         {
             appError.Run(async context =>

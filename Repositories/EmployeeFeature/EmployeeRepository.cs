@@ -67,7 +67,6 @@ public class EmployeeRepository : IEmployeeRepository
         {
             employees = _dbContext.Employees?.IgnoreAutoIncludes().Where(search!.Compile()).ToList();
         }
-
         return Task.FromResult(employees);
     }
 
