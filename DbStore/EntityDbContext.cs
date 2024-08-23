@@ -1,10 +1,11 @@
 using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using test_dotnet_app.Entities;
 
 namespace test_dotnet_app.DbStore;
 
-public class EntityDbContext: DbContext
+public class EntityDbContext: IdentityDbContext<User>
 {
     // public EntityDbContext(DbContextOptions<EntityDbContext> options) : base(options)
     // {
@@ -40,5 +41,6 @@ public class EntityDbContext: DbContext
         modelBuilder.ConfigureEmployeeEntityRelations();
         modelBuilder.ApplyConfiguration(new DepartmentEntityConfiguration());
         modelBuilder.ApplyConfiguration(new EmployeeEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new IdentityRoleEntityConfiguration());
     }
 }

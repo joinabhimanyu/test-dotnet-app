@@ -39,7 +39,7 @@ public class EmployeeRepository : IEmployeeRepository
         return Task.FromResult(employees);
     }
 
-    public Task<Employee?> GetByIdAsync(int id, bool include)
+    public Task<Employee> GetByIdAsync(int id, bool include)
     {
         Employee? employee = null;
         if (include)

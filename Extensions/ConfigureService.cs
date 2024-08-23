@@ -1,4 +1,5 @@
 using System;
+using test_dotnet_app.Services.Authentication;
 using test_dotnet_app.Services.DepartmentFeature;
 using test_dotnet_app.Services.EmployeeFeature;
 
@@ -10,5 +11,6 @@ public static class ConfigureServiceWrapper
     {
         services.AddScoped<IDepartmentService, DepartmentService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
     }
 }

@@ -39,7 +39,7 @@ public class DepartmentRepository : IDepartmentRepository
         return Task.FromResult(departments);
     }
 
-    public Task<Department?> GetByIdAsync(int id, bool include)
+    public Task<Department> GetByIdAsync(int id, bool include)
     {
         Department? department=null;
         if (include)

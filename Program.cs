@@ -19,6 +19,10 @@ builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.RegiserRequestCultureMiddleware();
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
+
 
 var app = builder.Build();
 
@@ -39,7 +43,7 @@ if (app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

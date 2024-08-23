@@ -8,7 +8,7 @@ namespace test_dotnet_app.Repositories.DepartmentFeature;
 public interface IDepartmentRepository
 {
     Task<IEnumerable<Department>> GetAllAsync(bool include);
-    Task<Department?> GetByIdAsync(int id, bool include);
+    Task<Department> GetByIdAsync(int id, bool include);
     Task<IEnumerable<Department>?> SearchAsync(List<SearchParam>? searchParams, bool include);
     Task AddAsync(Department department);
     Task UpdateAsync(Department department);
