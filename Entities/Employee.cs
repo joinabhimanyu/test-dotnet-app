@@ -22,7 +22,6 @@ public class Employee : BaseEntity
     [MaxLength(50, ErrorMessage = "Last Name cannot exceed 50 characters")]
     public string? LastName { get; set; }
     // computed property for FullName
-    public string FullName => $"{FirstName} {LastName}";
     
     [ForeignKey(nameof(Department))]
     public int DepartmentId { get; set; }

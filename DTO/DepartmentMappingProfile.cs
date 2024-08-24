@@ -8,11 +8,14 @@ public class DepartmentMappingProfile: Profile
     public DepartmentMappingProfile()
     {
         CreateMap<Entities.Department, DepartmentDto>()
-            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToUniversalTime()))
-            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.ToUniversalTime()));
+            .ForCtorParam("id", opt=>opt.MapFrom(src=>src.Id))
+            .ForCtorParam("name", opt=>opt.MapFrom(src=>src.Name))
+            .ForCtorParam("employees", opt=>opt.MapFrom(src=>src.Employees))
+            .ForCtorParam("createdAt", opt => opt.MapFrom(src => src.CreatedAt.ToUniversalTime()))
+            .ForCtorParam("updatedAt", opt => opt.MapFrom(src => src.UpdatedAt.ToUniversalTime()));
 
         CreateMap<DepartmentDto, Entities.Department>()
-            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
-            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+            .ForMember("CreatedAt", opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForMember("UpdatedAt", opt => opt.MapFrom(src => DateTime.UtcNow));
     }
 }

@@ -11,4 +11,12 @@ public class DepartmentDto : BaseDto
     public string? Name { get; set; }
 
     public IEnumerable<EmployeeDto>? Employees { get; set; }
+
+    public DepartmentDto(int id, string name, List<EmployeeDto> employees,DateTime createdAt, DateTime updatedAt) //
+        :base(createdAt, updatedAt)
+    {
+        Id = id;
+        Name = name;
+        Employees = employees;
+    }
 }
