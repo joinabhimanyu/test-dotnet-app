@@ -17,7 +17,7 @@ builder.Logging.AddConsole();
 builder.Services.ConfigureDbStore(builder.Configuration);
 builder.Services.ConfigureRepository();
 builder.Services.ConfigureService();
-builder.Services.AddAutoMapper(typeof(Program));
+// builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.RegiserRequestCultureMiddleware();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();

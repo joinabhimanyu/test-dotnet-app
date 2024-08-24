@@ -13,21 +13,23 @@ namespace test_dotnet_app.Services.Authentication;
 public class AuthenticationService : IAuthenticationService
 {
     private readonly UserManager<User> _userManager;
-    private readonly IMapper _mapper;
+    // private readonly IMapper _mapper;
     private readonly ILogger<AuthenticationService> _logger;
     private readonly IConfiguration _configuration;
 
-    public AuthenticationService(UserManager<User> userManager, IMapper mapper, ILogger<AuthenticationService> logger, IConfiguration configuration)
+    public AuthenticationService(UserManager<User> userManager, ILogger<AuthenticationService> logger, 
+        IConfiguration configuration) //IMapper mapper,
     {
         _userManager = userManager;
-        _mapper = mapper;
+        // _mapper = mapper;
         _logger = logger;
         _configuration = configuration;
     }
 
     public async Task<IdentityResult> RegisterUserAsync(UserRegistrationDto userRegistrationDto)
     {
-        var user = _mapper.Map<User>(userRegistrationDto);
+        var user=userRegistrationDto.MapFrom();
+        //_mapper.Map<User>(userRegistrationDto);
         var result = await _userManager.CreateAsync(user, userRegistrationDto!.Password!);
 
         if (result.Succeeded)

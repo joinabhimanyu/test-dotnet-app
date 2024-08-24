@@ -9,40 +9,41 @@ namespace test_dotnet_app.Services.EmployeeFeature;
 public class EmployeeService : IEmployeeService
 {
     private readonly ILogger<EmployeeService> _logger;
-    private readonly IMapper _mapper;
+    // private readonly IMapper _mapper;
     private readonly IEmployeeRepository _repository;
 
-    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeRepository repository, IMapper mapper)
+    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeRepository repository) //IMapper mapper
     {
         _logger = logger;
-        _mapper = mapper;
+        // _mapper = mapper;
         _repository = repository;
     }
 
     public async Task<IEnumerable<EmployeeDto>> GetAllAsync(bool include)
     {
         var employees = await _repository.GetAllAsync(include);
-        var employeesDto=_mapper.Map<IEnumerable<EmployeeDto>>(employees);
-        return employeesDto;
+        return employees.MapTo();
+        // var employeesDto=_mapper.Map<IEnumerable<EmployeeDto>>(employees);
     }
 
     public async Task<EmployeeDto?> GetByIdAsync(int id, bool include)
     {
         var employee = await _repository.GetByIdAsync(id, include);
-        var result=_mapper.Map<EmployeeDto>(employee);
-        return result;
+        return employee.MapTo();
+        // var result=_mapper.Map<EmployeeDto>(employee);
     }
 
     public async Task<IEnumerable<EmployeeDto>?> SearchAsync(List<SearchParam>? searchParams, bool include)
     {
         var employees = await _repository.SearchAsync(searchParams, include);
-        var result=_mapper.Map<IEnumerable<EmployeeDto>>(employees);
-        return result;
+        return employees!.MapTo();
+        // var result=_mapper.Map<IEnumerable<EmployeeDto>>(employees);
     }
 
     public async Task AddAsync(EmployeeDto employeeDto)
     {
-        var employee=_mapper.Map<Employee>(employeeDto);
+        var employee = employeeDto.MapFrom();
+        // var employee=_mapper.Map<Employee>(employeeDto);
         await _repository.AddAsync(employee);
     }
 
@@ -53,7 +54,8 @@ public class EmployeeService : IEmployeeService
 
     public async Task UpdateAsync(EmployeeDto employeeDto)
     {
-        var employee=_mapper.Map<Employee>(employeeDto);
+        var employee = employeeDto.MapFrom();
+        // var employee=_mapper.Map<Employee>(employeeDto);
         await _repository.UpdateAsync(employee);
     }
 }

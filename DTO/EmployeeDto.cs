@@ -20,6 +20,9 @@ public class EmployeeDto: BaseDto
 
     public string? DepartmentName { get; set; }
 
+    public EmployeeDto()
+    {
+    }
     public EmployeeDto(int id, string firstName, string lastName, string fullName, int departmentId, string departmentName
         , DateTime createdAt, DateTime updatedAt)
     : base(createdAt, updatedAt) 
