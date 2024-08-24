@@ -9,12 +9,10 @@ namespace test_dotnet_app.Services.DepartmentFeature;
 public class DepartmentService: IDepartmentService
 {
     private readonly ILogger<DepartmentService> _logger;
-    // private readonly IMapper _mapper;
     private readonly IDepartmentRepository _repository;
-    public DepartmentService(ILogger<DepartmentService> logger, IDepartmentRepository repository) //IMapper mapper
+    public DepartmentService(ILogger<DepartmentService> logger, IDepartmentRepository repository)
     {
         _logger = logger;
-        // _mapper = mapper;
         _repository = repository;
     }
 

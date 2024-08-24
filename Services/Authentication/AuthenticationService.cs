@@ -13,15 +13,13 @@ namespace test_dotnet_app.Services.Authentication;
 public class AuthenticationService : IAuthenticationService
 {
     private readonly UserManager<User> _userManager;
-    // private readonly IMapper _mapper;
     private readonly ILogger<AuthenticationService> _logger;
     private readonly IConfiguration _configuration;
 
     public AuthenticationService(UserManager<User> userManager, ILogger<AuthenticationService> logger, 
-        IConfiguration configuration) //IMapper mapper,
+        IConfiguration configuration)
     {
         _userManager = userManager;
-        // _mapper = mapper;
         _logger = logger;
         _configuration = configuration;
     }

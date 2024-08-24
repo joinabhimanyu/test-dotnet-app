@@ -9,13 +9,11 @@ namespace test_dotnet_app.Services.EmployeeFeature;
 public class EmployeeService : IEmployeeService
 {
     private readonly ILogger<EmployeeService> _logger;
-    // private readonly IMapper _mapper;
     private readonly IEmployeeRepository _repository;
 
-    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeRepository repository) //IMapper mapper
+    public EmployeeService(ILogger<EmployeeService> logger, IEmployeeRepository repository)
     {
         _logger = logger;
-        // _mapper = mapper;
         _repository = repository;
     }
 
