@@ -9,10 +9,10 @@ namespace test_dotnet_app.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<AuthenticationController> _logger;
         private readonly IAuthenticationService _authentication;
 
-        public AuthenticationController(ILogger logger, IAuthenticationService authentication)
+        public AuthenticationController(ILogger<AuthenticationController> logger, IAuthenticationService authentication)
         {
             _logger = logger;
             _authentication = authentication;

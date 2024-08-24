@@ -5,7 +5,7 @@ namespace test_dotnet_app.Middlewares;
 
 public class RequestCultureMiddleware : IMiddleware
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<RequestCultureMiddleware> _logger;
 
     public RequestCultureMiddleware(ILogger<RequestCultureMiddleware> logger)
     {

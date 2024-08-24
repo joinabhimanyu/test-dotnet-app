@@ -14,7 +14,7 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly UserManager<User> _userManager;
     private readonly IMapper _mapper;
-    private readonly ILogger _logger;
+    private readonly ILogger<AuthenticationService> _logger;
     private readonly IConfiguration _configuration;
 
     public AuthenticationService(UserManager<User> userManager, IMapper mapper, ILogger<AuthenticationService> logger, IConfiguration configuration)
