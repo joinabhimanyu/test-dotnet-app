@@ -2,6 +2,7 @@ using System;
 
 namespace test_dotnet_app.DTO;
 
+// this is base dto
 public class BaseDto
 {
     public DateTime CreatedAt { get; set; } = DateTime.Now;
